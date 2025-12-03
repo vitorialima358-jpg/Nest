@@ -6,9 +6,12 @@ import {
   Delete,
   Param,
   Body,
+  HttpCode,
+  HttpStatus,
+  ParseIntPipe
 } from '@nestjs/common';
-import { PostagemService } from './postagem.service';
-import { Postagem } from './entities/postagem.entity';
+import { PostagemService } from '../services/postagem.service';
+import { Postagem } from '../entities/postagem.entity';
 
 @Controller('/postagens')
 export class PostagemController {
@@ -40,7 +43,9 @@ export class PostagemController {
   }
 
   @Delete('/:id')
-  delete(@Param('id') id: number) {
-    return this.service.delete(id);
-  }
+@HttpCode(HttpStatus.NO_CONTENT)
+delete(@Param('id', ParseIntPipe) id: number) {
+  return this.service.delete(id);
+
+}
 }
