@@ -2,7 +2,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, ILike, DeleteResult } from 'typeorm';
 import { Postagem } from '../entities/postagem.entity';
-import { TemaService } from '../../tema/services/tema.service'; 
+import { TemaService } from '../../tema/services/tema.service';
 
 @Injectable()
 export class PostagemService {
@@ -10,59 +10,60 @@ export class PostagemService {
     @InjectRepository(Postagem)
     private postagemRepository: Repository<Postagem>,
 
-    private readonly temaService: TemaService // 
+    private readonly temaService: TemaService
   ) {}
-
 
   async findAll(): Promise<Postagem[]> {
     return this.postagemRepository.find({
-      relations: { tema: true }
+      relations: {
+        tema: true,
+        usuario: true
+      }
     });
   }
 
+  async findById(id: number): Promise<Postagem> {
 
-  async findById(id: number): Promise<Postagem | null> {
-    return this.postagemRepository.findOne({
+    const postagem = await this.postagemRepository.findOne({
       where: { id },
-      relations: { tema: true }
+      relations: {
+        tema: true,
+        usuario: true
+      }
     });
-  }
 
+    if (!postagem)
+      throw new HttpException('Postagem não encontrada!', HttpStatus.NOT_FOUND);
+
+    return postagem;
+  }
 
   async findByTitulo(titulo: string): Promise<Postagem[]> {
     return this.postagemRepository.find({
       where: { titulo: ILike(`%${titulo}%`) },
-      relations: { tema: true }
+      relations: {
+        tema: true,
+        usuario: true
+      }
     });
   }
 
-
   async create(postagem: Postagem): Promise<Postagem> {
-    // ✔️ VERIFICA SE O TEMA EXISTE ANTES DE SALVAR
     await this.temaService.findById(postagem.tema.id);
-
     return this.postagemRepository.save(postagem);
   }
-
 
   async update(postagem: Postagem): Promise<Postagem> {
 
-  
     await this.findById(postagem.id);
-
-  
     await this.temaService.findById(postagem.tema.id);
 
     return this.postagemRepository.save(postagem);
   }
 
+  async delete(id: number): Promise<DeleteResult> {
 
-  async delete(id: number): Promise<DeleteResult | null> {
-    const busca = await this.findById(id);
-
-    if (!busca) {
-      return null;
-    }
+    await this.findById(id);
 
     return this.postagemRepository.delete(id);
   }

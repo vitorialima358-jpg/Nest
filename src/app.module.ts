@@ -7,6 +7,11 @@ import { PostagemModule } from './postagem/postagem.module';
 import { Tema } from './tema/entities/tema.entity';
 import { TemaModule } from './tema/tema.module';
 
+import { Usuario } from './usuario/entities/usuario.entity';
+import { UsuarioModule } from './usuario/usuario.module';
+
+import { AuthModule } from './auth/auth.module';
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -14,15 +19,17 @@ import { TemaModule } from './tema/tema.module';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'hanna23', // sua senha
+      password: 'hanna23',
       database: 'db_blogpessoal',
-      entities: [Postagem, Tema], // <-- registre as duas entidades aqui
+      entities: [Postagem, Tema, Usuario], // <-- aqui!!! todas as entidades
       synchronize: true,
     }),
 
     // Módulos da aplicação
     PostagemModule,
     TemaModule,
+    AuthModule,     // <-- adicionar aqui
+    UsuarioModule,  // <-- adicionar também
   ],
 })
 export class AppModule {}
