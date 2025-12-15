@@ -31,12 +31,13 @@ export class TemaService {
         return tema;
     }
 
-    async findAllByDescricao(descricao: string): Promise<Tema[]> {
-        return await this.temaRepository.find({
-            where: { descricao: ILike(`%${descricao}%`) },
-            relations: { postagem: true }
-        })
+ findByDescricao(descricao: string): Promise<Tema[]> {
+  return this.temaRepository.find({
+    where: {
+      descricao: ILike(`%${descricao}%`)
     }
+  });
+}
 
     async create(tema: Tema): Promise<Tema> {
         return await this.temaRepository.save(tema);

@@ -1,16 +1,20 @@
 import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { LocalAuthGuard } from '../guard/local-auth.guard';
 import { AuthService } from '../services/auth.service';
 import { UsuarioLogin } from './../entities/usuariologin.entity';
 
-@Controller("/auth")
+
+@ApiTags('Usuario')
+@Controller("/usuarios")
 export class AuthController {
-    constructor(private authService: AuthService) {}
+    constructor(private authService: AuthService) { }
 
     @UseGuards(LocalAuthGuard)
-    @Post('/logar')
     @HttpCode(HttpStatus.OK)
-    login(@Body() usuario: UsuarioLogin): Promise<any> {
-        return this.authService.login(usuario);
+    @Post('/logar')
+    async login(@Body() user: UsuarioLogin): Promise<any> {
+        return this.authService.login(user);
     }
+
 }

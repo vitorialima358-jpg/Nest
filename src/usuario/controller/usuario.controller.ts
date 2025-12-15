@@ -1,40 +1,62 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put, UseGuards } from "@nestjs/common";
-import { UsuarioService } from "../service/usuario.service";
-import { Usuario } from "../entities/usuario.entity";
-import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Put,
+  UseGuards,
+  Param,
+  ParseIntPipe,
+} from "@nestjs/common";
 
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { JwtAuthGuard } from "../../auth/guard/jwt-auth.guard";
+import { Usuario } from "../entities/usuario.entity";
+import { UsuarioService } from "../service/usuario.service";
+
+@ApiTags('Usuario')
+@ApiBearerAuth()
 @Controller("/usuarios")
 export class UsuarioController {
 
-    constructor(private readonly usuarioService: UsuarioService) { }
+  constructor(private readonly usuarioService: UsuarioService) {}
 
-    // Anotação que indica que usaremos uma classe de validação especial (Guard)
-    @UseGuards(JwtAuthGuard)    // Vamos nessa rota a autenticação via Token JWT de Validação
-    @Get('/all')
-    @HttpCode(HttpStatus.OK)
-    findAll(): Promise<Usuario[]> {
-        return this.usuarioService.findAll();
-    }
+  // 🔒 LISTAR TODOS
+  @UseGuards(JwtAuthGuard)
+  @Get('/all')
+  @HttpCode(HttpStatus.OK)
+  findAll(): Promise<Usuario[]> {
+    return this.usuarioService.findAll();
+  }
 
-    @UseGuards(JwtAuthGuard)
-    @Get('/:id')
-    @HttpCode(HttpStatus.OK)
-    findById(@Param('id', ParseIntPipe) id: number): Promise<Usuario> {
-        return this.usuarioService.findById(id)
-    }
+  // 🔒 BUSCAR POR ID
+  @UseGuards(JwtAuthGuard)
+  @Get('/:id')
+  @HttpCode(HttpStatus.OK)
+  findById(
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<Usuario> {
+    return this.usuarioService.findById(id);
+  }
 
-    // Essa rota estará desprotegida de JWT
-    @Post('/cadastrar')
-    @HttpCode(HttpStatus.CREATED)
-    async create(@Body() usuario: Usuario): Promise<Usuario> {
-        return this.usuarioService.create(usuario)
-    }
+  // 🔓 CADASTRAR (PÚBLICO)
+  @Post('/cadastrar')
+  @HttpCode(HttpStatus.CREATED)
+  async create(
+    @Body() usuario: Usuario
+  ): Promise<Usuario> {
+    return this.usuarioService.create(usuario);
+  }
 
-    @UseGuards(JwtAuthGuard)
-    @Put('/atualizar')
-    @HttpCode(HttpStatus.OK)
-    async update(@Body() usuario: Usuario): Promise<Usuario> {
-        return this.usuarioService.update(usuario)
-    }
-
+  // 🔒 ATUALIZAR
+  @UseGuards(JwtAuthGuard)
+  @Put('/atualizar')
+  @HttpCode(HttpStatus.OK)
+  async update(
+    @Body() usuario: Usuario
+  ): Promise<Usuario> {
+    return this.usuarioService.update(usuario);
+  }
 }
