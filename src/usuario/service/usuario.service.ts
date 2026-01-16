@@ -43,7 +43,7 @@ async findById(id: number): Promise<Usuario> {
         let usuarioBusca = await this.findByUsuario(usuario.usuario);
 
         if (!usuarioBusca) {
-            // Antes de cadastrar o usuario chamamos a função de Criptografia construída no arquivo bcrypt
+          
             usuario.senha = await this.bcrypt.criptografarSenha(usuario.senha)
 
             return await this.usuarioRepository.save(usuario);
@@ -54,8 +54,8 @@ async findById(id: number): Promise<Usuario> {
     }
 
     async update(usuario: Usuario): Promise<Usuario> {
-        let usuarioUpdate: Usuario = await this.findById(usuario.id) // Função para localizar o usuario pelo ID
-        let usuarioBusca = await this.findByUsuario(usuario.usuario) // Função para localizar o usuario pelo email
+        let usuarioUpdate: Usuario = await this.findById(usuario.id)
+        let usuarioBusca = await this.findByUsuario(usuario.usuario) 
 
         if (!usuarioUpdate)
             throw new HttpException('Usuário não encontrado!', HttpStatus.NOT_FOUND);
@@ -63,7 +63,7 @@ async findById(id: number): Promise<Usuario> {
         if (usuarioBusca && usuarioBusca.id !== usuario.id)
             throw new HttpException('Usuário (e-mail) já Cadastrado, digite outro!', HttpStatus.BAD_REQUEST);
 
-        // Antes de atualizar o usuario chamamos a função de Criptografia construída no arquivo bcrypt
+       
         usuario.senha = await this.bcrypt.criptografarSenha(usuario.senha)
         return await this.usuarioRepository.save(usuario);
     }

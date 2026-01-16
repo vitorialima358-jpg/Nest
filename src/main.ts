@@ -1,17 +1,18 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
     .setTitle('Blog Pessoal')
-    .setDescription('Projeto Blog Pessoal - Generation Brasil')
+    .setDescription('Projeto Blog Pessoal')
     .setContact(
-      'Vitória Lima',
-      'https://github.com/vitorialima358-jpg',
-      'vitoria@email.com'
+      'Generation Brasil',
+      'http://www.generationbrasil.online',
+      'generation@email.com'
     )
     .setVersion('1.0')
     .addBearerAuth()
@@ -20,6 +21,11 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/swagger', app, document);
 
-  await app.listen(4000);
+  process.env.TZ = '-03:00';
+
+  app.useGlobalPipes(new ValidationPipe());
+  app.enableCors();
+  await app.listen(process.env.PORT ?? 3000);
 }
+
 bootstrap();

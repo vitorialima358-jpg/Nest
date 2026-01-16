@@ -1,7 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { PassportStrategy } from "@nestjs/passport";
-import { ExtractJwt, Strategy } from "passport-jwt";
-import { jwtConstants } from "../constants/constants";
+import { Injectable } from "@nestjs/common"
+import { PassportStrategy } from "@nestjs/passport"
+import { ExtractJwt, Strategy } from "passport-jwt"
+import { jwtConstants } from "../constants/constants"
 
 @Injectable()   // Indica que é uma Classe de Serviço e pode ser inserida/injetada diretamente em outras classes
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -15,8 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    // Criamos esse método puramente para seguir o padrão pré-definido pela PassportStrategy. 
-    // Ele sempre será chamado quando a validação do Token dentro do construtor passar. Se fosse necessário poderiamos personalizar
+   
     async validate(payload: any) {
         return payload;
     }
