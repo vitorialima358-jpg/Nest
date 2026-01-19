@@ -5,6 +5,7 @@ import { AuthModule } from '../auth/auth.module';
 import { UsuarioService } from './service/usuario.service';
 import { UsuarioController } from './controller/usuario.controller'
 
+
 @Module({
     imports: [TypeOrmModule.forFeature([Usuario]), forwardRef(() => AuthModule)],
     providers: [UsuarioService],

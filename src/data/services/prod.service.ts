@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { TypeOrmOptionsFactory, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from "@nestjs/typeorm";
 
 @Injectable()
 export class ProdService implements TypeOrmOptionsFactory {
@@ -7,11 +8,14 @@ export class ProdService implements TypeOrmOptionsFactory {
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {
       type: 'postgres',
-      url: process.env.DATABASE_URL + '?sslmode=require',
-      autoLoadEntities: true,
-      synchronize: true,
+      url: process.env.DATABASE_URL,
       logging: false,
-      ssl: true,
+      dropSchema: false,
+      ssl: {
+        rejectUnauthorized: false,
+      },
+      synchronize: true,
+      autoLoadEntities: true,
     };
   }
 }
